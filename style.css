@@ -1,0 +1,9 @@
+.mainResults {
+    display: flex;
+    
+}
+
+#search_bar {
+    text-align: center;
+    vertical-align: middle;
+}
