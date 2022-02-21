@@ -1,16 +1,16 @@
-var resultView = new Vue({
-  el:'#app',
-  data() {
-    return {
-      inputSearch: "",
-      userSearched: false,
-      jsonRaw: null,
-      resultArray: [],
-    }
-  },
+import { createApp } from 'vue';
+
+const app = createApp({
+  data: () => ({
+    inputSearch: "",
+    userSearched: false,
+    jsonRaw: null,
+    resultArray: [],
+  }),
   methods: {
     search:function() {
-        userSearched = true;
+        console.log("inside search func with input: " + inputSearch);
+        userSearched = false;
         // request based on inputSearch and populate jsonRaw
 
         // put actual results we want to display into resultArray
@@ -18,3 +18,5 @@ var resultView = new Vue({
     }
   },
 })
+
+app.mount('#app');
