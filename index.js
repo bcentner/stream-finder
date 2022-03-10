@@ -1,3 +1,4 @@
+// 8596c94855d28fdca5aa37866daaf12a
 export default {
   data: () => ({
     inputSearch: "",
