@@ -1,5 +1,7 @@
-// 8596c94855d28fdca5aa37866daaf12a
-export default {
+// API Key: 8596c94855d28fdca5aa37866daaf12a
+import { createApp } from 'vue'
+
+appy = createApp({
   data: () => ({
     inputSearch: "",
     userSearched: false,
@@ -19,4 +21,4 @@ export default {
 
     }
   },
-}
+}).mount("#app")
