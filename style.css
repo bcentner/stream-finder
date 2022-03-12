@@ -1,9 +1,36 @@
+h1 {
+  background-color:rgb(179, 218, 195);
+  margin: 10px;
+}
+
 .mainResults {
     display: flex;
-    
+    padding: 10px;
+}
+
+#resultBox {
+  display: flex;
+  padding: 10px;
+  width: 100%;
+}
+
+#metadata {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+#metadata p {
+  padding: 10px;
+}
+
+#metadata button {
+  margin: 10px;
+  width: 200px;
 }
 
 #search_bar {
-    text-align: center;
+    text-align: left;
     vertical-align: middle;
+    margin: 10px;
 }
