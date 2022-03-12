@@ -47,6 +47,7 @@
             // send http get to the api
             axios
               .get(query_string)
+
               .then(response => {
                 this.resultArray = response["data"]["results"];
                 console.log(this.resultArray);
@@ -75,6 +76,7 @@
 
             
           } // showServices
+
         },
       }).mount('#app')
     </script>
@@ -90,6 +92,7 @@
       <button v-on:click="search">Search</button>
 
       <template v-if="userSearched" class="mainResults">
+
         <div v-if="resultArray.length != 0" v-for="item in resultArray"> <!-- removed from end of tag... :key="item.id"-->
         	<p> {{ item }} </p>
             <p>title: {{ item.original_title }}</p>
