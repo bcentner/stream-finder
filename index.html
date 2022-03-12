@@ -21,12 +21,22 @@
       createApp({
         data: () => ({
           inputSearch: "",
+          curID: "",
           userSearched: false,
+          invalidSearch: false,
           resultArray: [],
         }),
         methods: {
           search() {
             console.log("inside search func with input: " + this.inputSearch);
+
+            if (this.inputSearch == "") {
+            	console.log("error: empty search field");
+            	this.invalidSearch = true;
+            	return;
+            }// Restricts user from empty search
+
+            this.invalidSearch = false;
             this.userSearched = true;
 
             // format request string
@@ -37,12 +47,36 @@
             // send http get to the api
             axios
               .get(query_string)
-              .then(response => (this.resultArray = response))
-              .catch(response => (console.log("failed to get movie query")))
+
+              .then(response => {
+                this.resultArray = response["data"]["results"];
+                console.log(this.resultArray);
+              })
+              .catch(response => (console.log("failed to get movie query")));
+
+            // TODO: get the id
 
             // put actual results we want to display into resultArray
-            console.log(this.resultArray)
-          }
+            // console.log(this.resultArray);
+            // console.log(typeof(this.resultArray));
+
+            /*
+            var test = this.resultArray[0];
+            console.log(test);
+            */
+
+            for (property in this.resultArray){
+            	console.log(property);
+            }
+          }, // search()
+          showServices(id) {
+            // make request to site with this id
+
+            // show the streaming services
+
+            
+          } // showServices
+
         },
       }).mount('#app')
     </script>
@@ -58,11 +92,13 @@
       <button v-on:click="search">Search</button>
 
       <template v-if="userSearched" class="mainResults">
-        <div v-if="resultArray.length != 0" v-for="item in resultArray" :key="item.id">
+
+        <div v-if="resultArray.length != 0" v-for="item in resultArray"> <!-- removed from end of tag... :key="item.id"-->
+        	<p> {{ item }} </p>
             <p>title: {{ item.original_title }}</p>
             <p>release date: {{ item.release_date }}</p>
             <p>image: {{ item.poster_path }}</p> <!--FIXME: this is likely just a string-->
-            <p>streaming services:</p> 
+            <button type="button" v-on:click="showServices(item.id)" :key="item.id">streaming services</button> 
             <!--FIXME: we need to make another request for this-->
             <!-- <ul>
               <li v-for="service in item.streamingProviders" :key="service">{{ service }}</li>
@@ -70,7 +106,11 @@
         </div>
         <div v-else><p>No results found</p></div>
       </template>
-      <div v-else></div>
+
+      <div v-if="invalidSearch"> 
+      	<p>Please enter a valid query</p>
+      </div>
+      <div v-else>Try searching for something (looks like you haven't yet)</div>
       
       
     </div>
