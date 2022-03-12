@@ -52,6 +52,10 @@
               .then(response => {
                 this.resultArray = response["data"]["results"];
                 console.log(this.resultArray);
+                this.resultArray.forEach(item => {
+                  item.poster_path = "https://image.tmdb.org/t/p/original" + item.poster_path;
+                  console.log(item.poster_path)
+                });
               })
               .catch(response => (console.log("failed to get movie query")));
 
@@ -107,10 +111,10 @@
       <template v-if="userSearched" class="mainResults">
 
         <div v-if="resultArray.length != 0" v-for="item in resultArray"> <!-- removed from end of tag... :key="item.id"-->
-        	<p> {{ item }} </p>
+            <img :src="item.poster_path" style="height: 30%; width: 30%;"></img>
             <p>title: {{ item.original_title }}</p>
             <p>release date: {{ item.release_date }}</p>
-            <p>image: {{ item.poster_path }}</p> <!--FIXME: this is likely just a string-->
+             <!--FIXME: this is likely just a string-->
             <button type="button" v-on:click="showServices(item.id)" :key="item.id">streaming services</button> 
             <!--FIXME: we need to make another request for this-->
             <ul>
