@@ -25,6 +25,7 @@
           userSearched: false,
           invalidSearch: false,
           resultArray: [],
+          services: {}
         }),
         methods: {
           search() {
@@ -71,7 +72,19 @@
           }, // search()
           showServices(id) {
             // make request to site with this id
-
+            var queryString = "https://api.themoviedb.org/3/movie/";
+            queryString += id;
+            queryString += "/watch/providers?api_key=8596c94855d28fdca5aa37866daaf12a";
+            
+            axios
+              .get(queryString)
+              .then(response => {
+                //console.log(response);
+                this.services[id] = response["data"]["results"]["US"]["flatrate"];
+                console.log(this.services[id]);
+                //console.log(this.resultArray);
+              })
+              .catch(response => (console.log("failed to get movie query")));
             // show the streaming services
 
             
@@ -100,9 +113,9 @@
             <p>image: {{ item.poster_path }}</p> <!--FIXME: this is likely just a string-->
             <button type="button" v-on:click="showServices(item.id)" :key="item.id">streaming services</button> 
             <!--FIXME: we need to make another request for this-->
-            <!-- <ul>
-              <li v-for="service in item.streamingProviders" :key="service">{{ service }}</li>
-            </ul> -->
+            <ul>
+              <li v-for="service in services[item.id]">{{ service.provider_name }}</li>
+            </ul>
         </div>
         <div v-else><p>No results found</p></div>
       </template>
