@@ -29,8 +29,11 @@ h1 {
   width: 200px;
 }
 
-#search_bar {
-    text-align: left;
-    vertical-align: middle;
-    margin: 10px;
+#search-div {
+  margin: 10px;
+}
+
+#search_button {
+  margin: 0 auto;
+  display: block;
 }

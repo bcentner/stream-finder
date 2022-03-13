@@ -105,8 +105,14 @@
     <div id='app'>
       <h1>Universal Streaming Search</h1>
 
-      <input v-model="inputSearch" v-on:keyup.enter="search" type="text" id="search_bar" placeholder="Search me!!!">
-      <button v-on:click="search">Search</button>
+      <div class="form-floating mb-3" id="search-div">
+        <input v-model="inputSearch" v-on:keyup.enter="search" type="text" class="form-control" id="search_bar floatingInput" placeholder="movie title">
+        <label for="floatingInput">Enter a movie title</label>
+      </div>
+      
+      <div id="button-container">
+        <button type="button" class="btn btn-success search-button" v-on:click="search">Search</button>
+      </div>
 
       <template v-if="userSearched" class="mainResults">
 
@@ -117,7 +123,7 @@
               <p>release date: {{ item.release_date }}</p>
               <p>viewer rating: {{ item.vote_average }} / 10</p>
                <!--FIXME: this is likely just a string-->
-              <button type="button" v-on:click="showServices(item.id)" :key="item.id">streaming services</button> 
+              <button type="button" class="btn btn-dark" type="button" v-on:click="showServices(item.id)" :key="item.id">streaming services</button> 
               <!--FIXME: we need to make another request for this-->
               <ul>
                 <li v-for="service in services[item.id]">{{ service.provider_name }}</li>
