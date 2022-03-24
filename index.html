@@ -135,10 +135,10 @@
         <div v-else><p>No results found</p></div>
       </template>
 
-      <div v-if="invalidSearch"> 
+      <div v-if="invalidSearch && userSearched"> 
       	<p>Please enter a valid query</p>
       </div>
-      <div v-else style="margin:10px;">Try searching for something (looks like you haven't yet)</div>
+      <div v-else-if="!userSearched" style="margin:10px;">Try searching for something (looks like you haven't yet)</div>
       
       
     </div>
