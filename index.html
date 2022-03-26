@@ -51,7 +51,7 @@
 
         <div id="resultBox" v-if="resultArray.length != 0" v-for="item in resultArray"> <!-- removed from end of tag... :key="item.id"-->
           
-          <img :src="item.poster_path" style="height: 100%; width: 50%;"></img>
+          <img :src="item.poster_path" style="height: 400px;"></img>
             <div id="metadata">
               <h2 style="margin:10px" v-if="!tvSelected">{{ item.original_title }}</h2>
               <h2 style="margin:10px" v-else="tvSelected">{{ item.original_name }}</h2>
