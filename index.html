@@ -17,6 +17,69 @@
       }
     </script>
 
+  </head>
+
+  <body>
+    <div id='app'>
+      <h1 style="text-align:center;">Universal Streaming Search</h1>
+
+      <div class="button-container">
+        <button type="button" v-on:click="spawnHelp" class="btn btn-light">?</button>
+      </div>
+
+      <div class="form-floating mb-3" id="search-div">
+        <input style="font-size:1.5em; height:4em;" v-model="inputSearch" v-on:keyup.enter="search" type="text" class="form-control" id="search_bar floatingInput" placeholder="movie title">
+        <label style="font-size:1.5em;" for="floatingInput">Enter a title</label>
+      </div>
+
+      <div id="movie-tv-choice">
+        <p id="movie-label">Movies</p>
+        <div class="form-check form-switch">
+          <input style="width:90px; height:40px;" v-model="tvSelected" v-on:click="toggleMovieOrTV" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+        </div>
+        <p id="tv-label">TV Shows</p>
+      </div>
+
+      
+      <div id="button-container">
+        <button style="margin:10px;" type="button" class="btn btn-success search-button" v-on:click="search">Search</button>
+        <button style="margin:10px" class="btn btn-primary search-button" v-on:click="clearSearch">Clear</button>
+      </div>
+      
+
+      <div v-if="userSearched" class="mainResults">
+
+        <div id="resultBox" v-if="resultArray.length != 0" v-for="item in resultArray"> <!-- removed from end of tag... :key="item.id"-->
+          
+          <img :src="item.poster_path" style="height: 100%; width: 50%;"></img>
+            <div id="metadata">
+              <h2 style="margin:10px" v-if="!tvSelected">{{ item.original_title }}</h2>
+              <h2 style="margin:10px" v-else="tvSelected">{{ item.original_name }}</h2>
+              
+              <p style="margin:10px" v-if="!tvSelected">release date: {{ item.release_date }}</p>
+              <p style="margin:10px" v-else="tvSelected">first aired: {{ item.first_air_date }}</p>
+
+              <p style="margin:10px">viewer rating: {{ item.vote_average }} / 10</p>
+               <!--FIXME: this is likely just a string-->
+              <button type="button" class="btn btn-dark" type="button" v-on:click="showServices(item)" :key="item.id">streaming services</button> 
+              <!--FIXME: we need to make another request for this-->
+              <ul v-if="services[item.id] && item.clickedStreamingButton">
+                <li v-for="service in services[item.id]">{{ service.provider_name }}</li>
+              </ul>
+              <p v-else-if="item.clickedStreamingButton">No streaming services found.</p>
+            </div>
+        </div>
+        <div v-else><p>No results found</p></div>
+      </div>
+
+      <div v-if="invalidSearch && userSearched"> 
+      	<p style="margin:10px;">Please enter a valid query</p>
+      </div>
+
+
+      
+    </div>
+
     <script type="module">
       import { createApp } from 'vue'
     
@@ -26,6 +89,7 @@
           curID: "",
           userSearched: false,
           invalidSearch: false,
+          tvSelected: false,
           resultArray: [],
           services: {}
         }),
@@ -43,7 +107,8 @@
             this.userSearched = true;
 
             // format request string
-            var query_string = "https://api.themoviedb.org/3/search/movie?api_key=8596c94855d28fdca5aa37866daaf12a&language=en-US&query=";
+            var place_holder = this.tvSelected ? "tv" : "movie";
+            var query_string = "https://api.themoviedb.org/3/search/" + place_holder + "?api_key=8596c94855d28fdca5aa37866daaf12a&language=en-US&query=";
             query_string += this.inputSearch;
             query_string += "&page=1&include_adult=false";
 
@@ -55,93 +120,78 @@
                 this.resultArray = response["data"]["results"];
                 console.log(this.resultArray);
                 this.resultArray.forEach(item => {
-                  item.poster_path = "https://image.tmdb.org/t/p/original" + item.poster_path;
+                  if (item.poster_path != null) {
+                    item.poster_path = "https://image.tmdb.org/t/p/original" + item.poster_path;
+
+                  } else {
+                    item.poster_path = "noPosterWorking.jpg";
+                  }
+                  item.clickedStreamingButton = false;
                   console.log(item.poster_path)
                 });
               })
               .catch(response => (console.log("failed to get movie query")));
-
-            // TODO: get the id
-
-            // put actual results we want to display into resultArray
-            // console.log(this.resultArray);
-            // console.log(typeof(this.resultArray));
-
-            /*
-            var test = this.resultArray[0];
-            console.log(test);
-            */
-
-            for (property in this.resultArray){
-            	console.log(property);
+            
+            try {
+              for (property in this.resultArray){
+                console.log(property);
+              }
+            }
+            catch {
+              console.log("your result array is empty")
             }
           }, // search()
-          showServices(id) {
+          showServices(item) {
             // make request to site with this id
-            var queryString = "https://api.themoviedb.org/3/movie/";
-            queryString += id;
+            var queryString;
+            if (this.tvSelected) {
+              queryString = "https://api.themoviedb.org/3/tv/";
+            }
+            else {
+              queryString = "https://api.themoviedb.org/3/movie/";
+            }
+            queryString += item.id;
             queryString += "/watch/providers?api_key=8596c94855d28fdca5aa37866daaf12a";
             
             axios
               .get(queryString)
               .then(response => {
                 //console.log(response);
-                this.services[id] = response["data"]["results"]["US"]["flatrate"];
-                console.log(this.services[id]);
+                this.services[item.id] = response["data"]["results"]["US"]["flatrate"];
+                console.log(this.services[item.id]);
                 //console.log(this.resultArray);
               })
               .catch(response => (console.log("failed to get movie query")));
-            // show the streaming services
+            
+          item.clickedStreamingButton = true;
 
             
-          } // showServices
+          }, // showServices(),
+          clearSearch() {
+            this.userSearched = false;
+            this.resultArray = []
+            this.inputSearch = "";
+          },
+          toggleMovieOrTV() {
+            if (this.tvSelected) {
+              this.tvSelected = false;
+            }
+            else {
+              this.tvSelected = true;
+            }
+            this.search()
+          },
+          spawnHelp(){
+            console.log("FIXME: let's make an 'about' type page!")
+          }
 
         },
       }).mount('#app')
     </script>
 
-    
-  </head>
 
-  <body>
-    <div id='app'>
-      <h1 class="display-5">Universal Streaming Search</h1>
 
-      <div class="form-floating mb-3" id="search-div">
-        <input v-model="inputSearch" v-on:keyup.enter="search" type="text" class="form-control" id="search_bar floatingInput" placeholder="movie title">
-        <label for="floatingInput">Enter a movie title</label>
-      </div>
-      
-      <div id="button-container">
-        <button type="button" class="btn btn-success search-button" v-on:click="search">Search</button>
-      </div>
 
-      <template v-if="userSearched" class="mainResults">
-
-        <div id="resultBox" v-if="resultArray.length != 0" v-for="item in resultArray"> <!-- removed from end of tag... :key="item.id"-->
-          <img :src="item.poster_path" style="height: 20%; width: 20%;"></img>
-            <div id="metadata">
-              <p>title: {{ item.original_title }}</p>
-              <p>release date: {{ item.release_date }}</p>
-              <p>viewer rating: {{ item.vote_average }} / 10</p>
-               <!--FIXME: this is likely just a string-->
-              <button type="button" class="btn btn-dark" type="button" v-on:click="showServices(item.id)" :key="item.id">streaming services</button> 
-              <!--FIXME: we need to make another request for this-->
-              <ul>
-                <li v-for="service in services[item.id]">{{ service.provider_name }}</li>
-              </ul>
-            </div>
-        </div>
-        <div v-else><p>No results found</p></div>
-      </template>
-
-      <div v-if="invalidSearch && userSearched"> 
-      	<p>Please enter a valid query</p>
-      </div>
-      <div v-else-if="!userSearched" style="margin:10px;">Try searching for something (looks like you haven't yet)</div>
-      
-      
-    </div>
     
   </body>
 </html>
