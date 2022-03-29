@@ -28,11 +28,11 @@ p, ul, button, label {
 
 #movie-label{
   margin-right: 20px;
-  margin-left: 10px;
+  margin-left: 55px;
 }
 
 #tv-label {
-  margin-left: 10px;
+  margin-left: 20px;
 }
 
 #button-container {
@@ -73,7 +73,7 @@ p, ul, button, label {
 }
 
 #search-div {
-  margin: 10px;
+  margin: 50px;
 }
 
 #search_button {
