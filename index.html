@@ -57,12 +57,12 @@
               <h2 style="margin:10px" v-if="!tvSelected">{{ item.original_title }}</h2>
               <h2 style="margin:10px" v-else="tvSelected">{{ item.original_name }}</h2>
               
-              <p style="margin:10px" v-if="!tvSelected">release date: {{ item.release_date }}</p>
-              <p style="margin:10px" v-else="tvSelected">first aired: {{ item.first_air_date }}</p>
+              <p style="margin:10px" v-if="!tvSelected">Release date: {{ item.release_date }}</p>
+              <p style="margin:10px" v-else="tvSelected">First Aired: {{ item.first_air_date }}</p>
 
-              <p style="margin:10px">viewer rating: {{ item.vote_average }} / 10</p>
+              <p style="margin:10px">Viewer Rating: {{ item.vote_average }} / 10</p>
                <!--FIXME: this is likely just a string-->
-              <button type="button" class="btn btn-info" type="button" v-on:click="showServices(item)" :key="item.id">streaming services</button> 
+              <button style="margin:10px" type="button" class="btn btn-info" type="button" v-on:click="showServices(item)" :key="item.id">streaming services</button> 
               <!--FIXME: we need to make another request for this-->
               <ul v-if="services[item.id] && item.clickedStreamingButton">
                 <li v-for="service in services[item.id]">{{ service.provider_name }}</li>
