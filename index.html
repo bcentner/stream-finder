@@ -34,17 +34,17 @@
       </div>
 
       <div id="movie-tv-choice">
-        <p id="movie-label">Movies</p>
+        <p id="movie-label" style="padding-top:5px;">Movies</p>
         <div class="form-check form-switch">
           <input style="width:90px; height:40px;" v-model="tvSelected" v-on:click="toggleMovieOrTV" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
         </div>
-        <p id="tv-label" style="padding:3px;">TV Shows</p>
+        <p id="tv-label" style="padding-top:5px;">TV Shows</p>
       </div>
 
       
       <div id="button-container">
-        <button style="margin-left:55px;" type="button" class="btn btn-success search-button" v-on:click="search">Search</button>
-        <button style="margin-left:20px" class="btn btn-primary search-button" v-on:click="clearSearch">Clear</button>
+        <button style="margin-left:55px; margin-top:10px;" type="button" class="btn btn-success search-button" v-on:click="search">Search</button>
+        <button style="margin-left:20px; margin-top:10px;" class="btn btn-primary search-button" v-on:click="clearSearch">Clear</button>
       </div>
       
 
