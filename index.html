@@ -8,7 +8,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com"> 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-    <link href="https://fonts.googleapis.com/css2?family=Karla&family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@800&family=Open+Sans:wght@300&display=swap" rel="stylesheet">
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -26,9 +26,7 @@
     <div id='app'>
       <h1 style="text-align:center;">UNIVERSAL STREAMING SEARCH</h1>
 
-      <div class="button-container">
-        <button type="button" v-on:click="spawnHelp" class="btn btn-light">?</button>
-      </div>
+      <p style="text-align:center;">Welcome to the Universal Streaming Search! You can find where to stream your favorites with the simple click of a button.</p>
 
       <div class="form-floating mb-3" id="search-div">
         <input style="font-size:1.5em; height:4em;" v-model="inputSearch" v-on:keyup.enter="search" type="text" class="form-control" id="search_bar floatingInput" placeholder="movie title">
