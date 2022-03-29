@@ -1,11 +1,22 @@
-h1 {
-  font-size: 5em;
-  background-color:rgb(183, 231, 179);
-  margin: 10px;
+body {
+  background-image: linear-gradient(to bottom right, rgb(164, 218, 164), rgb(162, 188, 235));
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-p, ul, button {
+h1 {
+  font-size: 4em;
+  margin: 10px;
+  font-family: 'Karla', sans-serif;
+}
+
+h2 {
+  font-family: 'Open Sans', sans-serif;
+}
+
+p, ul, button, label {
   font-size: 1.5em;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .mainResults {
@@ -40,6 +51,10 @@ p, ul, button {
   display: flex;
   padding: 10px;
   flex: 1 1 0px;
+  margin: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  color: white;
 }
 
 #metadata {
