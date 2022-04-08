@@ -26,13 +26,16 @@
     <div id='app'>
       <h1 style="text-align:center;">UNIVERSAL STREAMING SEARCH</h1>
 
-      <p style="text-align:center;">Welcome to the Universal Streaming Search! You can find where to stream your favorites with the simple click of a button.</p>
+      <p style="text-align:center; font-size: 2em;">Welcome to the Universal Streaming Search! You can find where to stream your favorites with the simple click of a button.</p>
 
       <div class="form-floating mb-3" id="search-div">
-        <input style="font-size:1.5em; height:4em;" v-model="inputSearch" v-on:keyup="typing" v-on:keyup.enter="search" type="text" class="form-control" id="floatingInput" placeholder="movie">
+        <input style="font-size:1.5em; height:4em;" v-model="inputSearch" v-on:keyup="typing($event)" v-on:keyup.enter="search" type="text" class="form-control" id="floatingInput" placeholder="movie">
         <label style="font-size:1.5em;" for="floatingInput">Enter a title</label>
-        <ul v-show="showSuggested" class="autocomplete-results">
-            <li v-for="(result, i) in suggestedArray" :key="i" v-on:click="clickSuggestion(i)" ref="refList" class="autocomplete-result">{{ result["original_title"] }}</li>
+        <ul v-if="showSuggested" class="autocomplete-results">
+          <li v-for="(result, i) in suggestedArray" :key="i" v-on:click="clickSuggestion(i)" ref="refList" class="autocomplete-result">
+            <p v-if="tvSelected">{{ result["original_name"] }}</p>
+            <p v-else>{{ result["original_title"] }}</p>
+          </li>
         </ul>
       </div>
 
@@ -153,7 +156,11 @@
               console.log("your result array is empty")
             }
           }, // search()
-          typing() {
+          typing(event) {
+            if (event.keyCode === 13) {
+              this.search();
+              return;
+            }
             if (this.inputSearch == "") {
             	console.log("error: empty search field");
             	this.invalidSearch = true;
