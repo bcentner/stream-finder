@@ -29,8 +29,11 @@
       <p style="text-align:center;">Welcome to the Universal Streaming Search! You can find where to stream your favorites with the simple click of a button.</p>
 
       <div class="form-floating mb-3" id="search-div">
-        <input style="font-size:1.5em; height:4em;" v-model="inputSearch" v-on:keyup.enter="search" type="text" class="form-control" id="floatingInput" placeholder="movie">
+        <input style="font-size:1.5em; height:4em;" v-model="inputSearch" v-on:keyup="typing" v-on:keyup.enter="search" type="text" class="form-control" id="floatingInput" placeholder="movie">
         <label style="font-size:1.5em;" for="floatingInput">Enter a title</label>
+        <ul v-show="showSuggested" class="autocomplete-results">
+            <li v-for="(result, i) in suggestedArray" :key="i" v-on:click="clickSuggestion(i)" ref="refList" class="autocomplete-result">{{ result["original_title"] }}</li>
+        </ul>
       </div>
 
       <div id="movie-tv-choice">
@@ -91,12 +94,19 @@
           userSearched: false,
           invalidSearch: false,
           tvSelected: false,
+          showSuggested: false,
           resultArray: [],
+          suggestedArray: [],
           services: {}
         }),
         methods: {
+          clickSuggestion(i) {
+            this.inputSearch = this.$refs.refList[i].innerText;
+            this.search();
+          },
           search() {
-            console.log("inside search func with input: " + this.inputSearch);
+            this.showSuggested = false;
+            //console.log("inside search func with input: " + this.inputSearch);
 
             if (this.inputSearch == "") {
             	console.log("error: empty search field");
@@ -119,7 +129,7 @@
 
               .then(response => {
                 this.resultArray = response["data"]["results"];
-                console.log(this.resultArray);
+                //console.log(this.resultArray);
                 this.resultArray.forEach(item => {
                   if (item.poster_path != null) {
                     item.poster_path = "https://image.tmdb.org/t/p/original" + item.poster_path;
@@ -128,20 +138,40 @@
                     item.poster_path = "noPosterWorking.jpg";
                   }
                   item.clickedStreamingButton = false;
-                  console.log(item.poster_path)
+                  //console.log(item.poster_path)
                 });
               })
               .catch(response => (console.log("failed to get movie query")));
             
             try {
               for (property in this.resultArray){
-                console.log(property);
+                //console.log("hey");
+                //console.log(property);
               }
             }
             catch {
               console.log("your result array is empty")
             }
           }, // search()
+          typing() {
+            if (this.inputSearch == "") {
+            	console.log("error: empty search field");
+            	this.invalidSearch = true;
+            	return;
+            }// Restricts user from empty search
+            // format request string
+            var place_holder = this.tvSelected ? "tv" : "movie";
+            var query_string = "https://api.themoviedb.org/3/search/" + place_holder + "?api_key=8596c94855d28fdca5aa37866daaf12a&language=en-US&query=";
+            query_string += this.inputSearch;
+            query_string += "&page=1&include_adult=false";
+            axios.get(query_string)
+            .then(response => {
+                //console.log("hi");
+                this.suggestedArray = response["data"]["results"];
+                this.showSuggested = true;
+            })
+            .catch(response => (console.log("failed to get movie query")));
+          },
           showServices(item) {
             // make request to site with this id
             var queryString;
