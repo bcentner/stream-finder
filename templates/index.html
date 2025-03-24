@@ -214,24 +214,28 @@
             this.userSearched = true;
             this.lastSearched = this.inputSearch;
 
-            const place_holder = this.tvSelected ? "tv" : "movie";
-            const query_string = `https://api.themoviedb.org/3/search/${place_holder}?api_key=8596c94855d28fdca5aa37866daaf12a&language=en-US&query=${this.inputSearch}&page=1&include_adult=false`;
-
-            axios.get(query_string)
-              .then(response => {
-                this.resultArray = response.data.results;
-                this.resultArray.forEach(item => {
-                  if (item.poster_path) {
-                    item.poster_path = "https://image.tmdb.org/t/p/w500" + item.poster_path;
-                  } else {
-                    item.poster_path = "{{ url_for('static', filename='noPosterWorking.jpg') }}";
-                  }
-                  item.clickedStreamingButton = false;
-                });
-              })
-              .catch(error => {
-                console.error("Failed to get search results:", error);
+            const mediaType = this.tvSelected ? "tv" : "movie";
+            
+            // Call our Flask backend instead of directly calling TMDb
+            axios.get(`/api/search/${mediaType}`, {
+              params: {
+                query: this.inputSearch
+              }
+            })
+            .then(response => {
+              this.resultArray = response.data.results;
+              this.resultArray.forEach(item => {
+                if (item.poster_path) {
+                  item.poster_path = "https://image.tmdb.org/t/p/w500" + item.poster_path;
+                } else {
+                  item.poster_path = "{{ url_for('static', filename='noPosterWorking.jpg') }}";
+                }
+                item.clickedStreamingButton = false;
               });
+            })
+            .catch(error => {
+              console.error("Failed to get search results:", error);
+            });
           },
           typing(event) {
             if (event.keyCode === 13) {
@@ -244,33 +248,39 @@
               return;
             }
             
-            const place_holder = this.tvSelected ? "tv" : "movie";
-            const query_string = `https://api.themoviedb.org/3/search/${place_holder}?api_key=8596c94855d28fdca5aa37866daaf12a&language=en-US&query=${this.inputSearch}&page=1&include_adult=false`;
+            const mediaType = this.tvSelected ? "tv" : "movie";
             
-            axios.get(query_string)
-              .then(response => {
-                this.suggestedArray = response.data.results.slice(0, 5); // Limit to 5 suggestions
-                this.showSuggested = this.suggestedArray.length > 0;
-              })
-              .catch(error => {
-                console.error("Failed to get suggestions:", error);
-              });
+            // Call our Flask backend for suggestions
+            axios.get(`/api/search/${mediaType}`, {
+              params: {
+                query: this.inputSearch
+              }
+            })
+            .then(response => {
+              this.suggestedArray = response.data.results.slice(0, 5); // Limit to 5 suggestions
+              this.showSuggested = this.suggestedArray.length > 0;
+            })
+            .catch(error => {
+              console.error("Failed to get suggestions:", error);
+              this.showSuggested = false;
+            });
           },
           showServices(item) {
             const mediaType = this.tvSelected ? "tv" : "movie";
-            const queryString = `https://api.themoviedb.org/3/${mediaType}/${item.id}/watch/providers?api_key=8596c94855d28fdca5aa37866daaf12a`;
             
-            axios.get(queryString)
-              .then(response => {
-                if (response.data.results?.US?.flatrate) {
-                  this.services[item.id] = response.data.results.US.flatrate;
-                } else {
-                  this.services[item.id] = [];
-                }
-              })
-              .catch(error => {
-                console.error("Failed to get streaming services:", error);
-              });
+            // Call our Flask backend for streaming services
+            axios.get(`/api/providers/${mediaType}/${item.id}`)
+            .then(response => {
+              if (response.data.results?.US?.flatrate) {
+                this.services[item.id] = response.data.results.US.flatrate;
+              } else {
+                this.services[item.id] = [];
+              }
+            })
+            .catch(error => {
+              console.error("Failed to get streaming services:", error);
+              this.services[item.id] = [];
+            });
             
             item.clickedStreamingButton = true;  
           },
