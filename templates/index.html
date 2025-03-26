@@ -228,7 +228,7 @@
                 if (item.poster_path) {
                   item.poster_path = "https://image.tmdb.org/t/p/w500" + item.poster_path;
                 } else {
-                  item.poster_path = "{{ url_for('static', filename='noPosterWorking.jpg') }}";
+                  item.poster_path = "{{ url_for('static', filename='static/noPosterWorking.jpg') }}";
                 }
                 item.clickedStreamingButton = false;
               });
