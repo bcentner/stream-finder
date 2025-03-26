@@ -1,7 +1,6 @@
 # StreamFinder - Universal Streaming Search
 
-StreamFinder is a modern web application that helps users find where to watch their favorite movies and TV shows across various streaming platforms. Built with Flask, it provides a sleek, user-friendly interface to search and discover streaming availability.
-
+StreamFinder is a modern web application that helps users find where to watch their favorite movies and TV shows across various streaming platforms. Built with Flask and vue.js, it provides a sleek, user-friendly interface to search and discover streaming availability.
 
 ## Features
 
@@ -33,7 +32,7 @@ StreamFinder is a modern web application that helps users find where to watch th
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/streamfinder.git
+   git clone https://github.com/bcentner/streamfinder.git
    cd streamfinder
    ```
 
