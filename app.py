@@ -9,7 +9,7 @@ try:
 except ImportError:
     pass  # dotenv is optional
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="/stream-finder/static")
 
 # Get API key from environment variable
 TMDB_API_KEY = os.environ.get('TMDB_API_KEY')
