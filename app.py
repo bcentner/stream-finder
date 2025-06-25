@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import os
 import requests
 from dotenv import load_dotenv
@@ -18,6 +18,11 @@ if not TMDB_API_KEY:
     print("WARNING: No TMDb API key set. Please set the TMDB_API_KEY environment variable.")
     # Remove this fallback in production
     TMDB_API_KEY = "YOUR_API_KEY_HERE"  # Replace before deployment
+
+# Additional static file route for development access
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    return send_from_directory('static', filename)
 
 @app.route('/')
 def index():
@@ -62,6 +67,21 @@ def providers(media_type, id):
         return jsonify({"error": str(e), "results": {}}), 500
 
 # Add more routes here
+
+# WSGI application wrapper for subdirectory deployment
+class PrefixMiddleware:
+    def __init__(self, app, prefix='/stream-finder'):
+        self.app = app
+        self.prefix = prefix
+
+    def __call__(self, environ, start_response):
+        if environ.get('PATH_INFO', '').startswith(self.prefix):
+            environ['PATH_INFO'] = environ['PATH_INFO'][len(self.prefix):]
+            environ['SCRIPT_NAME'] = self.prefix
+        return self.app(environ, start_response)
+
+# Wrap the app for subdirectory deployment
+application = PrefixMiddleware(app)
 
 if __name__ == '__main__':
     app.run(debug=True) 
