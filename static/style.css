@@ -474,6 +474,7 @@ input:checked + .slider:before {
   font-weight: 700;
   margin-bottom: 10px;
   line-height: 1.3;
+  color: #000 !important;
 }
 
 .card-date {
@@ -584,4 +585,9 @@ input:checked + .slider:before {
   .card-title {
     font-size: 1.1rem;
   }
+}
+
+/* Ensure movie name and streaming provider names are black and visible */
+.provider-name {
+  color: #000 !important;
 } 
