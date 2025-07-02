@@ -178,6 +178,7 @@
     </div>
 
     <script type="module">
+      const BASE_PATH = '/stream-finder';
       import { createApp } from 'vue'
     
       createApp({
@@ -217,7 +218,7 @@
             const mediaType = this.tvSelected ? "tv" : "movie";
             
             // Call our Flask backend instead of directly calling TMDb
-            axios.get(`/api/search/${mediaType}`, {
+            axios.get(`${BASE_PATH}/api/search/${mediaType}`, {
               params: {
                 query: this.inputSearch
               }
@@ -251,7 +252,7 @@
             const mediaType = this.tvSelected ? "tv" : "movie";
             
             // Call our Flask backend for suggestions
-            axios.get(`/api/search/${mediaType}`, {
+            axios.get(`${BASE_PATH}/api/search/${mediaType}`, {
               params: {
                 query: this.inputSearch
               }
@@ -269,7 +270,7 @@
             const mediaType = this.tvSelected ? "tv" : "movie";
             
             // Call our Flask backend for streaming services
-            axios.get(`/api/providers/${mediaType}/${item.id}`)
+            axios.get(`${BASE_PATH}/api/providers/${mediaType}/${item.id}`)
             .then(response => {
               if (response.data.results?.US?.flatrate) {
                 this.services[item.id] = response.data.results.US.flatrate;

@@ -19,6 +19,8 @@ if not TMDB_API_KEY:
     # Remove this fallback in production
     TMDB_API_KEY = "YOUR_API_KEY_HERE"  # Replace before deployment
 
+print(f"TMDB_API_KEY loaded: {bool(TMDB_API_KEY)}")
+
 # Additional static file route for development access
 @app.route('/static/<path:filename>')
 def static_files(filename):
@@ -75,9 +77,16 @@ class PrefixMiddleware:
         self.prefix = prefix
 
     def __call__(self, environ, start_response):
-        if environ.get('PATH_INFO', '').startswith(self.prefix):
-            environ['PATH_INFO'] = environ['PATH_INFO'][len(self.prefix):]
+        path_info = environ.get('PATH_INFO', '')
+        print(f"PrefixMiddleware: PATH_INFO before: {path_info}, SCRIPT_NAME before: {environ.get('SCRIPT_NAME', '')}")
+        # Only strip the prefix if it is present at the start
+        if self.prefix and path_info.startswith(self.prefix):
+            environ['PATH_INFO'] = path_info[len(self.prefix):] or '/'
             environ['SCRIPT_NAME'] = self.prefix
+            print(f"PrefixMiddleware: Stripped prefix '{self.prefix}'")
+        else:
+            print("PrefixMiddleware: No prefix stripped")
+        print(f"PrefixMiddleware: PATH_INFO after: {environ.get('PATH_INFO')}, SCRIPT_NAME after: {environ.get('SCRIPT_NAME', '')}")
         return self.app(environ, start_response)
 
 # Wrap the app for subdirectory deployment
