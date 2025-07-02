@@ -28,7 +28,7 @@
 </head>
 
 <body>
-    <div id="app" class="app-container">
+    <div id="app" class="app-container" v-cloak>
         <div class="app-background">
             <div class="hero-section">
                 <div class="container">
@@ -146,14 +146,14 @@
                                                 Where to Watch
                                             </button>
                                             
-                                            <div class="streaming-providers" v-if="services[item.id] && item.clickedStreamingButton && services[item.id].length > 0">
+                                            <div class="streaming-providers" v-if="services[item.id] && item.clickedStreamingButton && services[item.id].length > 0 && !loadingServices[item.id]">
                                                 <div class="providers-list">
                                                     <div v-for="service in services[item.id]" class="provider-item">
                                                         <div class="provider-name">[[ service.provider_name ]]</div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="no-providers" v-else-if="item.clickedStreamingButton">
+                                            <div class="no-providers" v-else-if="item.clickedStreamingButton && !loadingServices[item.id]">
                                                 <p><i class="fas fa-info-circle me-2"></i> Not available for streaming</p>
                                             </div>
                                         </div>
@@ -193,7 +193,8 @@
           showSuggested: false,
           resultArray: [],
           suggestedArray: [],
-          services: {}
+          services: {},
+          loadingServices: {}
         }),
         methods: {
           clickSuggestion(i) {
@@ -268,7 +269,7 @@
           },
           showServices(item) {
             const mediaType = this.tvSelected ? "tv" : "movie";
-            
+            this.loadingServices[item.id] = true;
             // Call our Flask backend for streaming services
             axios.get(`${BASE_PATH}/api/providers/${mediaType}/${item.id}`)
             .then(response => {
@@ -281,8 +282,10 @@
             .catch(error => {
               console.error("Failed to get streaming services:", error);
               this.services[item.id] = [];
+            })
+            .finally(() => {
+              this.loadingServices[item.id] = false;
             });
-            
             item.clickedStreamingButton = true;  
           },
           clearSearch() {

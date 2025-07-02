@@ -590,4 +590,6 @@ input:checked + .slider:before {
 /* Ensure movie name and streaming provider names are black and visible */
 .provider-name {
   color: #000 !important;
-} 
+}
+
+[v-cloak] { display: none; } 
